@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0f766e">
+<title>أذكار المسلم</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ============ المتغيرات ============ */
+:root{
+  --bg:#eef4f1;
+  --card:#ffffff;
+  --card-2:#f6faf8;
+  --text:#10241d;
+  --muted:#6c847c;
+  --primary:#0f766e;
+  --primary-2:#2dd4bf;
+  --gold:#c9a227;
+  --border:rgba(15,118,110,.13);
+  --shadow:0 12px 32px -14px rgba(10,60,48,.35);
+  --radius:22px;
+}
+[data-theme="dark"]{
+  --bg:#08110f;
+  --card:#101e1a;
+  --card-2:#152822;
+  --text:#e7f5f0;
+  --muted:#87a49b;
+  --primary:#2dd4bf;
+  --primary-2:#5eead4;
+  --gold:#e0bb4a;
+  --border:rgba(45,212,191,.15);
+  --shadow:0 14px 34px -14px rgba(0,0,0,.85);
+}
+
+/* ============ الأساسيات ============ */
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  font-family:'Cairo',system-ui,-apple-system,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  transition:background .45s ease,color .45s ease;
+  overflow-x:hidden;
+}
+body::before{
+  content:'';
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(620px 420px at 88% -8%, rgba(45,212,191,.20), transparent 62%),
+    radial-gradient(520px 420px at -5% 102%, rgba(201,162,39,.14), transparent 62%);
+}
+button{font-family:inherit;border:none;background:none;color:inherit;cursor:pointer}
+
+.app{
+  position:relative;z-index:1;
+  max-width:560px;margin:0 auto;
+  padding:0 18px 120px;
+}
+
+/* ============ الهيدر ============ */
+.topbar{
+  position:sticky;top:0;z-index:50;
+  display:flex;align-items:center;gap:12px;
+  padding:14px 0 12px;
+  background:color-mix(in srgb,var(--bg) 78%,transparent);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  border-bottom:1px solid transparent;
+  transition:border-color .3s;
+}
+.topbar.scrolled{border-bottom-color:var(--border)}
+.brand{display:flex;align-items:center;gap:11px;flex:1;min-width:0}
+.logo{
+  width:44px;height:44px;flex:0 0 44px;
+  display:grid;place-items:center;
+  border-radius:15px;
+  font-size:20px;
+  background:linear-gradient(140deg,var(--primary),var(--primary-2));
+  color:#fff;
+  box-shadow:0 8px 20px -8px var(--primary);
+}
+.brand h1{
+  font-size:1.05rem;font-weight:800;margin:0;line-height:1.25;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.brand p{margin:0;font-size:.72rem;color:var(--muted);font-weight:600}
+.icon-btn{
+  width:42px;height:42px;flex:0 0 42px;
+  display:grid;place-items:center;
+  border-radius:14px;font-size:17px;
+  background:var(--card);
+  border:1px solid var(--border);
+  box-shadow:var(--shadow);
+  transition:transform .2s,background .3s;
+}
+.icon-btn:active{transform:scale(.92)}
+.back-btn{font-size:19px;font-weight:800}
+
+/* ============ العروض ============ */
+.view{display:none}
+.view.active{display:block;animation:fadeUp .38s cubic-bezier(.22,1,.36,1)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* ============ بطاقة الترحيب ============ */
+.hero{
+  margin-top:16px;
+  padding:22px 20px;
+  border-radius:26px;
+  background:linear-gradient(135deg,var(--primary),#0b5f59 60%,#0a4f4a);
+  color:#fff;
+  position:relative;overflow:hidden;
+  box-shadow:0 20px 40px -22px var(--primary);
+}
+.hero::after{
+  content:'☪';
+  position:absolute;left:-8px;bottom:-28px;
+  font-size:130px;opacity:.09;line-height:1;
+  transform:rotate(-12deg);
+}
+.hero .h-label{font-size:.76rem;opacity:.82;font-weight:600;letter-spacing:.4px}
+.hero .h-text{
+  font-size:1.15rem;font-weight:700;margin-top:8px;line-height:1.9;
+  position:relative;z-index:1;
+}
+.hero .h-foot{margin-top:14px;font-size:.72rem;opacity:.75;font-weight:600}
+
+/* ============ شبكة الأقسام ============ */
+.sec-title{
+  display:flex;align-items:center;justify-content:space-between;
+  margin:26px 4px 14px;
+  font-size:.92rem;font-weight:800;color:var(--text);
+}
+.sec-title small{font-size:.72rem;font-weight:600;color:var(--muted)}
+
+.cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.cat-card{
+  display:flex;flex-direction:column;align-items:flex-start;gap:12px;
+  padding:18px 16px;
+  border-radius:var(--radius);
+  background:var(--card);
+  border:1px solid var(--border);
+  box-shadow:var(--shadow);
+  text-align:right;
+  transition:transform .22s cubic-bezier(.34,1.56,.64,1),box-shadow .22s;
+}
+.cat-card:active{transform:scale(.965)}
+.cat-icon{
+  width:46px;height:46px;border-radius:15px;
+  display:grid;place-items:center;font-size:21px;
+  box-shadow:0 8px 18px -10px rgba(0,0,0,.5);
+}
+.cat-name{font-size:.94rem;font-weight:800;line-height:1.35}
+.cat-sub{font-size:.72rem;color:var(--muted);font-weight:600;margin-top:-6px}
+
+/* ============ شريط التقدم ============ */
+.progress-wrap{
+  margin:16px 0 4px;
+  padding:14px 16px;
+  border-radius:18px;
+  background:var(--card);
+  border:1px solid var(--border);
+  box-shadow:var(--shadow);
+}
+.progress-top{display:flex;justify-content:space-between;align-items:center;font-size:.76rem;font-weight:700;color:var(--muted);margin-bottom:9px}
+.progress-top b{color:var(--primary);font-size:.82rem}
+.progress-bar{height:8px;border-radius:99px;background:var(--card-2);overflow:hidden;border:1px solid var(--border)}
+.progress-fill{
+  height:100%;width:0;border-radius:99px;
+  background:linear-gradient(90deg,var(--primary),var(--primary-2));
+  transition:width .5s cubic-bezier(.22,1,.36,1);
+}
+
+/* ============ بطاقة الذكر ============ */
+.zikr-list{display:flex;flex-direction:column;gap:14px;margin-top:14px}
+.zikr-card{
+  padding:18px 18px 14px;
+  border-radius:var(--radius);
+  background:var(--card);
+  border:1px solid var(--border);
+  box-shadow:var(--shadow);
+  cursor:pointer;
+  transition:transform .18s,background .3s,opacity .3s;
+  position:relative;overflow:hidden;
+}
+.zikr-card:active{transform:scale(.985)}
+.zikr-card.done{
+  background:linear-gradient(135deg,color-mix(in srgb,var(--primary) 12%,var(--card)),var(--card));
+  border-color:color-mix(in srgb,var(--primary) 35%,transparent);
+}
+.zikr-card.done::after{
+  content:'✓';
+  position:absolute;top:12px;left:14px;
+  width:24px;height:24px;border-radius:50%;
+  display:grid;place-items:center;
+  background:var(--primary);color:#fff;font-size:13px;font-weight:800;
+}
+.zikr-text{
+  font-size:1.02rem;line-height:2.15;font-weight:500;
+  white-space:pre-line;
+  margin:0 0 12px;
+}
+.zikr-card.done .zikr-text{opacity:.82}
+.zikr-foot{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding-top:11px;border-top:1px dashed var(--border);
+}
+.zikr-note{font-size:.72rem;color:var(--muted);font-weight:700}
+.zikr-badge{
+  min-width:56px;text-align:center;
+  padding:6px 12px;border-radius:99px;
+  font-size:.76rem;font-weight:800;
+  background:var(--card-2);
+  color:var(--primary);
+  border:1px solid var(--border);
+  transition:background .3s,color .3s;
+}
+.zikr-card.done .zikr-badge{background:var(--primary);color:#fff;border-color:transparent}
+
+/* ============ المسبحة ============ */
+.zikr-chips{
+  display:flex;gap:9px;overflow-x:auto;
+  padding:16px 2px 8px;
+  scrollbar-width:none;
+}
+.zikr-chips::-webkit-scrollbar{display:none}
+.chip{
+  flex:0 0 auto;
+  padding:9px 16px;border-radius:99px;
+  font-size:.8rem;font-weight:700;white-space:nowrap;
+  background:var(--card);
+  border:1px solid var(--border);
+  color:var(--muted);
+  transition:all .25s;
+}
+.chip.active{
+  background:linear-gradient(135deg,var(--primary),var(--primary-2));
+  color:#fff;border-color:transparent;
+  box-shadow:0 10px 22px -12px var(--primary);
+}
+
+.tasbih-wrap{
+  position:relative;
+  width:min(300px,78vw);height:min(300px,78vw);
+  margin:22px auto 6px;
+}
+.ring{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:var(--border);stroke-width:10}
+.ring-fg{
+  fill:none;stroke-width:10;stroke-linecap:round;
+  transition:stroke-dashoffset .35s cubic-bezier(.22,1,.36,1);
+  filter:drop-shadow(0 0 8px rgba(45,212,191,.45));
+}
+.tasbih-btn{
+  position:absolute;
+  inset:26px;
+  border-radius:50%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  background:radial-gradient(circle at 30% 25%,var(--card-2),var(--card));
+  border:1px solid var(--border);
+  box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.35);
+  user-select:none;
+  transition:transform .12s ease,box-shadow .3s,background .5s;
+}
+.tasbih-btn:active{transform:scale(.955)}
+.tasbih-btn.pop{animation:pop .28s cubic-bezier(.34,1.56,.64,1)}
+@keyframes pop{0%{transform:scale(.94)}60%{transform:scale(1.03)}100%{transform:scale(1)}}
+.tasbih-btn.complete{
+  background:radial-gradient(circle at 30% 25%,var(--primary),#0b5f59);
+}
+.tasbih-btn.complete .tb-zikr,
+.tasbih-btn.complete .tb-count,
+.tasbih-btn.complete .tb-target{color:#fff}
+.tb-zikr{font-size:.9rem;font-weight:800;color:var(--muted);text-align:center;padding:0 16px;line-height:1.5}
+.tb-count{
+  font-size:3.3rem;font-weight:800;line-height:1.05;
+  color:var(--primary);
+  font-variant-numeric:tabular-nums;
+  transition:color .3s;
+}
+.tb-target{font-size:.74rem;font-weight:700;color:var(--muted)}
+
+.targets{display:flex;justify-content:center;gap:10px;margin:22px 0 6px;flex-wrap:wrap}
+.target-chip{
+  padding:8px 20px;border-radius:99px;
+  font-size:.8rem;font-weight:800;
+  background:var(--card);border:1px solid var(--border);color:var(--muted);
+  transition:all .25s;
+}
+.target-chip.active{
+  background:var(--card-2);color:var(--primary);
+  border-color:var(--primary);
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--primary) 15%,transparent);
+}
+
+.tb-stats{
+  display:flex;align-items:center;gap:12px;
+  margin-top:20px;
+  padding:16px;
+  border-radius:20px;
+  background:var(--card);
+  border:1px solid var(--border);
+  box-shadow:var(--shadow);
+}
+.stat{flex:1;text-align:center}
+.stat span{display:block;font-size:1.25rem;font-weight:800;color:var(--primary);font-variant-numeric:tabular-nums}
+.stat small{font-size:.7rem;color:var(--muted);font-weight:700}
+.reset-btn{
+  padding:10px 20px;border-radius:14px;
+  font-size:.8rem;font-weight:800;
+  background:color-mix(in srgb,var(--gold) 16%,transparent);
+  color:var(--gold);
+  border:1px solid color-mix(in srgb,var(--gold) 35%,transparent);
+  transition:transform .2s;
+}
+.reset-btn:active{transform:scale(.94)}
+
+/* ============ الشريط السفلي ============ */
+.nav{
+  position:fixed;bottom:0;left:0;right:0;z-index:60;
+  display:flex;justify-content:center;gap:8px;
+  padding:10px 16px calc(10px + env(safe-area-inset-bottom));
+  max-width:560px;margin:0 auto;
+  background:color-mix(in srgb,var(--bg) 82%,transparent);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border-top:1px solid var(--border);
+}
+.nav-btn{
+  flex:1;
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:9px 0;border-radius:16px;
+  font-size:.68rem;font-weight:800;color:var(--muted);
+  transition:all .25s;
+}
+.nav-ico{font-size:19px;line-height:1;transition:transform .25s}
+.nav-btn.active{color:var(--primary);background:color-mix(in srgb,var(--primary) 10%,transparent)}
+.nav-btn.active .nav-ico{transform:translateY(-2px) scale(1.1)}
+
+/* ============ توست ============ */
+.toast{
+  position:fixed;bottom:100px;left:50%;transform:translate(-50%,20px);
+  padding:11px 22px;border-radius:99px;
+  background:var(--primary);color:#fff;
+  font-size:.8rem;font-weight:800;
+  opacity:0;pointer-events:none;z-index:99;
+  transition:all .35s cubic-bezier(.22,1,.36,1);
+  box-shadow:0 12px 30px -12px var(--primary);
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- الهيدر -->
+  <header class="topbar" id="topbar">
+    <button class="icon-btn back-btn" id="backBtn" hidden aria-label="رجوع">→</button>
+    <div class="brand">
+      <div class="logo">☪</div>
+      <div>
+        <h1 id="pageTitle">أذكار المسلم</h1>
+        <p id="greeting">صباح الخير</p>
+      </div>
+    </div>
+    <button class="icon-btn" id="themeBtn" aria-label="تبديل المظهر">🌙</button>
+  </header>
+
+  <!-- عرض الرئيسية -->
+  <section id="homeView" class="view active">
+    <div class="hero">
+      <div class="h-label">ذكر اليوم</div>
+      <div class="h-text" id="heroZikr">سُبْحَانَ اللَّهِ وَبِحَمْدِهِ، سُبْحَانَ اللَّهِ الْعَظِيمِ</div>
+      <div class="h-foot">«كلمتان خفيفتان على اللسان، ثقيلتان في الميزان»</div>
+    </div>
+
+    <div class="sec-title">الأقسام <small>اختر وردك اليوم</small></div>
+    <div class="cat-grid" id="catGrid"></div>
+  </section>
+
+  <!-- عرض الأذكار -->
+  <section id="azkarView" class="view">
+    <div class="progress-wrap">
+      <div class="progress-top">
+        <span>تقدّمك في هذا القسم</span>
+        <b id="progText">0 / 0</b>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>
+    </div>
+    <div class="zikr-list" id="zikrList"></div>
+  </section>
+
+  <!-- عرض المسبحة -->
+  <section id="tasbihView" class="view">
+    <div class="zikr-chips" id="zikrChips"></div>
+
+    <div class="tasbih-wrap">
+      <svg class="ring" viewBox="0 0 200 200">
+        <defs>
+          <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:var(--primary)"/>
+            <stop offset="100%" style="stop-color:var(--primary-2)"/>
+          </linearGradient>
+        </defs>
+        <circle class="ring-bg" cx="100" cy="100" r="92"></circle>
+        <circle class="ring-fg" cx="100" cy="100" r="92" id="ringFg" stroke="url(#ringGrad)"></circle>
+      </svg>
+      <button class="tasbih-btn" id="tasbihBtn">
+        <span class="tb-zikr" id="tbZikr">سُبْحَانَ اللَّهِ</span>
+        <span class="tb-count" id="tbCount">0</span>
+        <span class="tb-target" id="tbTarget">من 33</span>
+      </button>
+    </div>
+
+    <div class="targets" id="targets"></div>
+
+    <div class="tb-stats">
+      <div class="stat"><span id="statRounds">0</span><small>جولات مكتملة</small></div>
+      <div class="stat"><span id="statTotal">0</span><small>إجمالي التسبيح</small></div>
+      <button class="reset-btn" id="resetBtn">تصفير</button>
+    </div>
+  </section>
+
+</div>
+
+<!-- الشريط السفلي -->
+<nav class="nav">
+  <button class="nav-btn active" data-view="home"><span class="nav-ico">🏠</span><span>الرئيسية</span></button>
+  <button class="nav-btn" data-view="tasbih"><span class="nav-ico">📿</span><span>المسبحة</span></button>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================= البيانات ================= */
+const AZKAR = {
+  morning: {
+    name: 'أذكار الصباح', icon: '🌅',
+    color: 'linear-gradient(135deg,#fbbf24,#f97316)',
+    items: [
+      { t:'أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ\n\nاللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَيْءٍ مِنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ', c:1, n:'آية الكرسي' },
+      { t:'قُلْ هُوَ اللَّهُ أَحَدٌ ۝ اللَّهُ الصَّمَدُ ۝ لَمْ يَلِدْ وَلَمْ يُولَدْ ۝ وَلَمْ يَكُنْ لَهُ كُفُوًا أَحَدٌ\n\nقُلْ أَعُوذُ بِرَبِّ الْفَلَقِ... \n\nقُلْ أَعُوذُ بِرَبِّ النَّاسِ...', c:3, n:'المعوذات الثلاث' },
+      { t:'أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ', c:1, n:'دعاء الصباح' },
+      { t:'اللَّهُمَّ بِكَ أَصْبَحْنَا، وَبِكَ أَمْسَيْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ، وَإِلَيْكَ النُّشُورُ', c:1 },
+      { t:'اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَٰهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ، وَأَبُوءُ بِذَنْبِي فَاغْفِرْ لِي', c:1, n:'سيد الاستغفار' },
+      { t:'حَسْبِيَ اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ عَلَيْهِ تَوَكَّلْتُ وَهُوَ رَبُّ الْعَرْشِ الْعَظِيمِ', c:7 },
+      { t:'بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ', c:3 },
+      { t:'رَضِيتُ بِاللَّهِ رَبًّا، وَبِالْإِسْلَامِ دِينًا، وَبِمُحَمَّدٍ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ نَبِيًّا', c:3 },
+      { t:'سُبْحَانَ اللَّهِ وَبِحَمْدِهِ', c:100 },
+      { t:'أَسْتَغْفِرُ اللَّهَ وَأَتُوبُ إِلَيْهِ', c:100 }
+    ]
+  },
+  evening: {
+    name: 'أذكار المساء', icon: '🌙',
+    color: 'linear-gradient(135deg,#6366f1,#8b5cf6)',
+    items: [
+      { t:'أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ\n\nاللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَيْءٍ مِنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ', c:1, n:'آية الكرسي' },
+      { t:'قُلْ هُوَ اللَّهُ أَحَدٌ ۝ اللَّهُ الصَّمَدُ ۝ لَمْ يَلِدْ وَلَمْ يُولَدْ ۝ وَلَمْ يَكُنْ لَهُ كُفُوًا أَحَدٌ\n\nقُلْ أَعُوذُ بِرَبِّ الْفَلَقِ... \n\nقُلْ أَعُوذُ بِرَبِّ النَّاسِ...', c:3, n:'المعوذات الثلاث' },
+      { t:'أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ', c:1 },
+      { t:'اللَّهُمَّ بِكَ أَمْسَيْنَا، وَبِكَ أَصْبَحْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ، وَإِلَيْكَ الْمَصِيرُ', c:1 },
+      { t:'اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَٰهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ، وَأَبُوءُ بِذَنْبِي فَاغْفِرْ لِي', c:1, n:'سيد الاستغفار' },
+      { t:'حَسْبِيَ اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ عَلَيْهِ تَوَكَّلْتُ وَهُوَ رَبُّ الْعَرْشِ الْعَظِيمِ', c:7 },
+      { t:'بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ', c:3 },
+      { t:'أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ', c:3 },
+      { t:'سُبْحَانَ اللَّهِ وَبِحَمْدِهِ', c:100 }
+    ]
+  },
+  sleep: {
+    name: 'أذكار النوم', icon: '🛏️',
+    color: 'linear-gradient(135deg,#0ea5e9,#1e40af)',
+    items: [
+      { t:'بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا', c:1 },
+      { t:'آيَةُ الْكُرْسِيِّ\n\nاللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ... وَهُوَ الْعَلِيُّ الْعَظِيمُ', c:1 },
+      { t:'اللَّهُمَّ قِنِي عَذَابَكَ يَوْمَ تَبْعَثُ عِبَادَكَ', c:3 },
+      { t:'سُبْحَانَ اللَّهِ', c:33 },
+      { t:'الْحَمْدُ لِلَّهِ', c:33 },
+      { t:'اللَّهُ أَكْبَرُ', c:34 },
+      { t:'اللَّهُمَّ أَسْلَمْتُ نَفْسِي إِلَيْكَ، وَوَجَّهْتُ وَجْهِي إِلَيْكَ، وَفَوَّضْتُ أَمْرِي إِلَيْكَ، وَأَلْجَأْتُ ظَهْرِي إِلَيْكَ، رَغْبَةً وَرَهْبَةً إِلَيْكَ، لَا مَلْجَأَ وَلَا مَنْجَا مِنْكَ إِلَّا إِلَيْكَ', c:1 },
+      { t:'اللَّهُمَّ إِنِّي أَسْلَمْتُ نَفْسِي إِلَيْكَ، وَأَعُوذُ بِكَ مِنْ شَرِّ نَفْسِي', c:1 }
+    ]
+  },
+  prayer: {
+    name: 'أذكار بعد الصلاة', icon: '🕌',
+    color: 'linear-gradient(135deg,#10b981,#047857)',
+    items: [
+      { t:'أَسْتَغْفِرُ اللَّهَ', c:3 },
+      { t:'اللَّهُمَّ أَنْتَ السَّلَامُ وَمِنْكَ السَّلَامُ، تَبَارَكْتَ يَا ذَا الْجَلَالِ وَالْإِكْرَامِ', c:1 },
+      { t:'لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ', c:1 },
+      { t:'سُبْحَانَ اللَّهِ', c:33 },
+      { t:'الْحَمْدُ لِلَّهِ', c:33 },
+      { t:'اللَّهُ أَكْبَرُ', c:33 },
+      { t:'اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ', c:1 },
+      { t:'آيَةُ الْكُرْسِيِّ', c:1 }
+    ]
+  },
+  general: {
+    name: 'أذكار متنوعة', icon: '✨',
+    color: 'linear-gradient(135deg,#f43f5e,#be123c)',
+    items: [
+      { t:'لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ', c:10 },
+      { t:'سُبْحَانَ اللَّهِ وَبِحَمْدِهِ، سُبْحَانَ اللَّهِ الْعَظِيمِ', c:100 },
+      { t:'لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ', c:100 },
+      { t:'اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى نَبِيِّنَا مُحَمَّدٍ', c:100 },
+      { t:'أَسْتَغْفِرُ اللَّهَ الْعَظِيمَ وَأَتُوبُ إِلَيْهِ', c:100 },
+      { t:'سُبْحَانَ اللَّهِ وَالْحَمْدُ لِلَّهِ وَلَا إِلَٰهَ إِلَّا اللَّهُ وَاللَّهُ أَكْبَرُ', c:100 },
+      { t:'اللَّهُمَّ إِنِّي أَسْأَلُكَ الْجَنَّةَ وَأَعُوذُ بِكَ مِنَ النَّارِ', c:3 }
+    ]
+  }
+};
+
+const TASBIH_ZIKR = [
+  { name:'سُبْحَانَ اللَّهِ', target:33 },
+  { name:'الْحَمْدُ لِلَّهِ', target:33 },
+  { name:'اللَّهُ أَكْبَرُ', target:34 },
+  { name:'لَا إِلَٰهَ إِلَّا اللَّهُ', target:100 },
+  { name:'أَسْتَغْفِرُ اللَّهَ', target:100 },
+  { name:'لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ', target:100 },
+  { name:'سُبْحَانَ اللَّهِ وَبِحَمْدِهِ', target:100 },
+  { name:'اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ', target:100 }
+];
+
+const TARGETS = [33, 99, 100, 0]; // 0 = بلا حد
+
+/* ================= التخزين ================= */
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem('zikr_'+k); return v ? JSON.parse(v) : d; }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem('zikr_'+k, JSON.stringify(v)); }catch(e){} }
+};
+
+let progress = store.get('progress', {});
+let tasbih = store.get('tasbih', { count:0, target:33, zikr:0, total:0, rounds:0 });
+let currentCat = null;
+
+/* ================= عناصر ================= */
+const $ = id => document.getElementById(id);
+const ringFg = $('ringFg');
+const RING_C = 2 * Math.PI * 92;
+ringFg.style.strokeDasharray = RING_C;
+ringFg.style.strokeDashoffset = RING_C;
+
+/* ================= المظهر ================= */
+const themeBtn = $('themeBtn');
+function applyTheme(t){
+  document.documentElement.dataset.theme = t;
+  themeBtn.textContent = t === 'dark' ? '☀️' : '🌙';
+  localStorage.setItem('zikr_theme', t);
+}
+applyTheme(localStorage.getItem('zikr_theme') || 'light');
+themeBtn.addEventListener('click', () => {
+  applyTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
+  if(navigator.vibrate) navigator.vibrate(10);
+});
+
+/* ================= التنقل ================= */
+function showView(name){
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  $(name + 'View').classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b =>
+    b.classList.toggle('active', b.dataset.view === name)
+  );
+  $('backBtn').hidden = name !== 'azkar';
+  if(name !== 'azkar') $('pageTitle').textContent = name === 'tasbih' ? 'المسبحة' : 'أذكار المسلم';
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+
+document.querySelectorAll('.nav-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    showView(btn.dataset.view);
+    if(btn.dataset.view === 'tasbih') updateTasbihUI();
+    if(navigator.vibrate) navigator.vibrate(8);
+  });
+});
+
+$('backBtn').addEventListener('click', () => showView('home'));
+
+window.addEventListener('scroll', () => {
+  $('topbar').classList.toggle('scrolled', window.scrollY > 8);
+});
+
+/* ================= الرئيسية ================= */
+function renderHome(){
+  const grid = $('catGrid');
+  grid.innerHTML = Object.entries(AZKAR).map(([key, cat]) => `
+    <button class="cat-card" data-cat="${key}">
+      <div class="cat-icon" style="background:${cat.color}">${cat.icon}</div>
+      <div class="cat-name">${cat.name}</div>
+      <div class="cat-sub">${cat.items.length} ذكر</div>
+    </button>
+  `).join('');
+
+  grid.querySelectorAll('.cat-card').forEach(card => {
+    card.addEventListener('click', () => {
+      openCategory(card.dataset.cat);
+      if(navigator.vibrate) navigator.vibrate(10);
+    });
+  });
+}
+
+/* ================= عرض قسم ================= */
+function openCategory(key){
+  currentCat = key;
+  const cat = AZKAR[key];
+  $('pageTitle').textContent = cat.name;
+
+  $('zikrList').innerHTML = cat.items.map((z, i) => {
+    const done = Math.min(progress[key + '-' + i] || 0, z.c);
+    return `
+      <div class="zikr-card ${done >= z.c ? 'done' : ''}" data-i="${i}">
+        <p class="zikr-text">${z.t}</p>
+        <div class="zikr-foot">
+          <span class="zikr-note">${z.n || 'ذكر'}</span>
+          <span class="zikr-badge">${done} / ${z.c}</span>
+        </div>
+      </div>`;
+  }).join('');
+
+  updateProgress();
+  showView('azkar');
+}
+
+function updateProgress(){
+  const cat = AZKAR[currentCat];
+  let done = 0, total = 0;
+  cat.items.forEach((z, i) => {
+    total += z.c;
+    done += Math.min(progress[currentCat + '-' + i] || 0, z.c);
+  });
+  const pct = total ? (done / total) * 100 : 0;
+  $('progFill').style.width = pct + '%';
+  $('progText').textContent = Math.round(pct) + '%';
+}
+
+/* النقر على الذكر */
+$('zikrList').addEventListener('click', e => {
+  const card = e.target.closest('.zikr-card');
+  if(!card) return;
+
+  const i = +card.dataset.i;
+  const cat = AZKAR[currentCat];
+  const z = cat.items[i];
+  const key = currentCat + '-' + i;
+  let cur = progress[key] || 0;
+
+  if(cur >= z.c) return;
+
+  cur++;
+  progress[key] = cur;
+  store.set('progress', progress);
+
+  card.querySelector('.zikr-badge').textContent = cur + ' / ' + z.c;
+  updateProgress();
+
+  if(cur >= z.c){
+    card.classList.add('done');
+    if(navigator.vibrate) navigator.vibrate([25, 40, 25]);
+  } else {
+    if(navigator.vibrate) navigator.vibrate(10);
+  }
+});
+
+/* ================= المسبحة ================= */
+function renderChips(){
+  $('zikrChips').innerHTML = TASBIH_ZIKR.map((z, i) =>
+    `<button class="chip ${i === tasbih.zikr ? 'active' : ''}" data-z="${i}">${z.name}</button>`
+  ).join('');
+
+  $('zikrChips').querySelectorAll('.chip').forEach(c => {
+    c.addEventListener('click', () => {
+      tasbih.zikr = +c.dataset.z;
+      tasbih.target = TASBIH_ZIKR[tasbih.zikr].target;
+      tasbih.count = 0;
+      store.set('tasbih', tasbih);
+      renderChips();
+      renderTargets();
+      updateTasbihUI();
+      if(navigator.vibrate) navigator.vibrate(10);
+    });
+  });
+}
+
+function renderTargets(){
+  $('targets').innerHTML = TARGETS.map(t =>
+    `<button class="target-chip ${t === tasbih.target ? 'active' : ''}" data-t="${t}">
+      ${t === 0 ? '∞ بلا حد' : t}
+    </button>`
+  ).join('');
+
+  $('targets').querySelectorAll('.target-chip').forEach(c => {
+    c.addEventListener('click', () => {
+      tasbih.target = +c.dataset.t;
+      tasbih.count = 0;
+      store.set('tasbih', tasbih);
+      renderTargets();
+      updateTasbihUI();
+      if(navigator.vibrate) navigator.vibrate(10);
+    });
+  });
+}
+
+function updateTasbihUI(){
+  const z = TASBIH_ZIKR[tasbih.zikr];
+  $('tbZikr').textContent = z.name;
+  $('tbCount').textContent = tasbih.count;
+  $('tbTarget').textContent = tasbih.target ? 'من ' + tasbih.target : 'بلا حد';
+
+  const frac = tasbih.target
+    ? Math.min(tasbih.count / tasbih.target, 1)
+    : (tasbih.count % 100) / 100;
+
+  ringFg.style.strokeDashoffset = RING_C * (1 - frac);
+
+  $('statRounds').textContent = tasbih.rounds || 0;
+  $('statTotal').textContent = tasbih.total || 0;
+}
+
+$('tasbihBtn').addEventListener('click', () => {
+  const btn = $('tasbihBtn');
+  tasbih.count++;
+  tasbih.total++;
+
+  if(navigator.vibrate) navigator.vibrate(12);
+
+  btn.classList.remove('pop');
+  void btn.offsetWidth;
+  btn.classList.add('pop');
+
+  if(tasbih.target && tasbih.count >= tasbih.target){
+    tasbih.rounds = (tasbih.rounds || 0) + 1;
+    btn.classList.add('complete');
+    if(navigator.vibrate) navigator.vibrate([40, 60, 40]);
+    updateTasbihUI();
+    store.set('tasbih', tasbih);
+
+    setTimeout(() => {
+      btn.classList.remove('complete');
+      tasbih.count = 0;
+      updateTasbihUI();
+      store.set('tasbih', tasbih);
+    }, 900);
+  } else {
+    updateTasbihUI();
+    store.set('tasbih', tasbih);
+  }
+});
+
+$('resetBtn').addEventListener('click', () => {
+  tasbih.count = 0;
+  tasbih.rounds = 0;
+  store.set('tasbih', tasbih);
+  updateTasbihUI();
+  showToast('تم التصفير');
+  if(navigator.vibrate) navigator.vibrate(20);
+});
+
+/* ================= توست ================= */
+let toastTimer;
+function showToast(msg){
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 1600);
+}
+
+/* ================= التحية ================= */
+function setGreeting(){
+  const h = new Date().getHours();
+  let g = 'أهلاً بك';
+  if(h >= 4 && h < 12) g = 'صباح الخير ☀️';
+  else if(h >= 12 && h < 17) g = 'طاب نهارك 🌤️';
+  else if(h >= 17 && h < 21) g = 'مساء الخير 🌇';
+  else g = 'ليلة مباركة 🌙';
+  $('greeting').textContent = g;
+}
+
+/* ================= تشغيل ================= */
+setGreeting();
+renderHome();
+renderChips();
+renderTargets();
+updateTasbihUI();
+</script>
+</body>
+</html>
